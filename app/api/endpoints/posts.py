@@ -27,7 +27,6 @@ def create_post(post: PostCreate, db: Session = Depends(get_db)):
                     detail="One or more tag IDs are invalid"
                 )
             db_post.tags = tags
-        
         db.add(db_post)
         db.commit()
         db.refresh(db_post)
@@ -67,12 +66,10 @@ def update_post(
     db_post = db.query(Post).filter(Post.id == post_id).first()
     if db_post is None:
         raise HTTPException(status_code=404, detail="Post not found")
-    
     try:
         db_post.title = post.title
         db_post.content = post.content
         db_post.category_id = post.category_id
-        
         if post.tag_ids is not None:
             tags = db.query(Tag).filter(Tag.id.in_(post.tag_ids)).all()
             if len(tags) != len(post.tag_ids):
@@ -81,7 +78,6 @@ def update_post(
                     detail="One or more tag IDs are invalid"
                 )
             db_post.tags = tags
-        
         db.commit()
         db.refresh(db_post)
         return db_post
