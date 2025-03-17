@@ -39,10 +39,8 @@ def update_category(
     db_category = db.query(Category).filter(Category.id == category_id).first()
     if db_category is None:
         raise HTTPException(status_code=404, detail="Category not found")
-    
     db_category.name = category.name
     db_category.description = category.description
-    
     db.commit()
     db.refresh(db_category)
     return db_category
@@ -53,7 +51,6 @@ def delete_category(category_id: int, db: Session = Depends(get_db)):
     db_category = db.query(Category).filter(Category.id == category_id).first()
     if db_category is None:
         raise HTTPException(status_code=404, detail="Category not found")
-    
     db.delete(db_category)
     db.commit()
     return {"message": "Category deleted successfully"}
