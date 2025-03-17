@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 from app.database import Base, get_db
 from app.main import app
+from sqlalchemy.orm import Session
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
@@ -23,12 +24,12 @@ def db_session():
         db.close()
 
 @pytest.fixture(scope="function")
-def client(db_session):
+def client(test_session: Session):
     def override_get_db():
         try:
-            yield db_session
+            yield test_session
         finally:
-            db_session.close()
+            test_session.close()
     app.dependency_overrides[get_db] = override_get_db
     with TestClient(app) as test_client:
         yield test_client
