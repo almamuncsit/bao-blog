@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from app.database import get_db
 from app.models.category import Category
@@ -8,14 +9,20 @@ from app.schemas.category import CategoryCreate, Category as CategorySchema
 
 router = APIRouter()
 
-
 @router.post("/", response_model=CategorySchema)
 def create_category(category: CategoryCreate, db: Session = Depends(get_db)):
-    db_category = Category(name=category.name, description=category.description)
-    db.add(db_category)
-    db.commit()
-    db.refresh(db_category)
-    return db_category
+    try:
+        db_category = Category(name=category.name, description=category.description)
+        db.add(db_category)
+        db.commit()
+        db.refresh(db_category)
+        return db_category
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail="Category with this name already exists"
+        )
 
 
 @router.get("/", response_model=List[CategorySchema])
