@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy.orm import Session
 
-def test_create_category(client, test_db: Session):
+def test_create_category(client, db_session):
     response = client.post(
         "/categories/",
         json={"name": "Test Category", "description": "Test Description"}
@@ -12,7 +12,7 @@ def test_create_category(client, test_db: Session):
     assert data["description"] == "Test Description"
     assert "id" in data
 
-
+# Update all other test functions to use db_session instead of test_db
 def test_create_category_without_description(client, test_db: Session):
     response = client.post(
         "/categories/",
