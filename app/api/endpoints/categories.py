@@ -17,12 +17,12 @@ def create_category(category: CategoryCreate, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(db_category)
         return db_category
-    except IntegrityError:
+    except IntegrityError as exc:
         db.rollback()
         raise HTTPException(
             status_code=400,
             detail="Category with this name already exists"
-        )
+        ) from exc
 
 
 @router.get("/", response_model=List[CategorySchema])
