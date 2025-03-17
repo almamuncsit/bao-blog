@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime
 from app.models import Post, Category, Tag
 
-def test_create_post(test_db):
+def test_create_post(db_session):
     post = Post(
         title="Test Post",
         content="Test Content"
@@ -16,7 +16,7 @@ def test_create_post(test_db):
     assert isinstance(db_post.created_at, datetime)
     assert isinstance(db_post.updated_at, datetime)
 
-def test_post_with_category(test_db):
+def test_post_with_category(db_session):
     category = Category(name="Test Category")
     test_db.add(category)
     test_db.commit()
@@ -32,7 +32,7 @@ def test_post_with_category(test_db):
     db_post = test_db.query(Post).first()
     assert db_post.category.name == "Test Category"
 
-def test_post_with_tags(test_db):
+def test_post_with_tags(db_session):
     tag1 = Tag(name="Tag1")
     tag2 = Tag(name="Tag2")
     test_db.add_all([tag1, tag2])

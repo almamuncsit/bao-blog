@@ -1,7 +1,8 @@
 import pytest
 from sqlalchemy.orm import Session
 
-def test_create_category(client, db_session):
+
+def test_create_category(client, db_session: Session):
     response = client.post(
         "/categories/",
         json={"name": "Test Category", "description": "Test Description"}
@@ -12,8 +13,8 @@ def test_create_category(client, db_session):
     assert data["description"] == "Test Description"
     assert "id" in data
 
-# Update all other test functions to use db_session instead of test_db
-def test_create_category_without_description(client, test_db: Session):
+
+def test_create_category_without_description(client, db_session: Session):
     response = client.post(
         "/categories/",
         json={"name": "Test Category No Desc"}
@@ -24,7 +25,7 @@ def test_create_category_without_description(client, test_db: Session):
     assert data["description"] is None
 
 
-def test_create_duplicate_category(client, test_db: Session):
+def test_create_duplicate_category(client, db_session: Session):
     # Create first category
     client.post(
         "/categories/",
@@ -39,7 +40,7 @@ def test_create_duplicate_category(client, test_db: Session):
     assert response.status_code == 400
 
 
-def test_read_categories(client, test_db: Session):
+def test_read_categories(client, db_session: Session):
     # Create test categories
     client.post("/categories/", json={"name": "Category 1"})
     client.post("/categories/", json={"name": "Category 2"})
@@ -52,13 +53,13 @@ def test_read_categories(client, test_db: Session):
     assert data[1]["name"] == "Category 2"
 
 
-def test_read_categories_empty(client, test_db: Session):
+def test_read_categories_empty(client, db_session: Session):
     response = client.get("/categories/")
     assert response.status_code == 200
     assert response.json() == []
 
 
-def test_read_category(client, test_db: Session):
+def test_read_category(client, db_session: Session):
     # Create a category
     create_response = client.post(
         "/categories/",
@@ -73,13 +74,13 @@ def test_read_category(client, test_db: Session):
     assert data["description"] == "Test Description"
 
 
-def test_read_non_existent_category(client, test_db: Session):
+def test_read_non_existent_category(client, db_session: Session):
     response = client.get("/categories/999")
     assert response.status_code == 404
     assert response.json()["detail"] == "Category not found"
 
 
-def test_update_category(client, test_db: Session):
+def test_update_category(client, db_session: Session):
     # Create a category
     create_response = client.post(
         "/categories/",
@@ -98,7 +99,7 @@ def test_update_category(client, test_db: Session):
     assert data["description"] == "Updated Description"
 
 
-def test_update_non_existent_category(client, test_db: Session):
+def test_update_non_existent_category(client, db_session: Session):
     response = client.put(
         "/categories/999",
         json={"name": "Updated Category", "description": "Updated Description"}
@@ -107,7 +108,7 @@ def test_update_non_existent_category(client, test_db: Session):
     assert response.json()["detail"] == "Category not found"
 
 
-def test_delete_category(client, test_db: Session):
+def test_delete_category(client, db_session: Session):
     # Create a category
     create_response = client.post(
         "/categories/",
@@ -125,7 +126,7 @@ def test_delete_category(client, test_db: Session):
     assert get_response.status_code == 404
 
 
-def test_delete_non_existent_category(client, test_db: Session):
+def test_delete_non_existent_category(client, db_session: Session):
     response = client.delete("/categories/999")
     assert response.status_code == 404
     assert response.json()["detail"] == "Category not found"

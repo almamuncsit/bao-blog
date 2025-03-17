@@ -1,7 +1,7 @@
 import pytest
 from app.models import Category
 
-def test_create_category(test_db):
+def test_create_category(db_session):
     category = Category(name="Test Category", description="Test Description")
     test_db.add(category)
     test_db.commit()
@@ -10,7 +10,7 @@ def test_create_category(test_db):
     assert db_category.name == "Test Category"
     assert db_category.description == "Test Description"
 
-def test_unique_category_name(test_db):
+def test_unique_category_name(db_session):
     category1 = Category(name="Test Category")
     category2 = Category(name="Test Category")
     
