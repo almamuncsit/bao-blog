@@ -1,6 +1,6 @@
+from datetime import datetime
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Table
 from sqlalchemy.orm import relationship
-from datetime import datetime
 from ..database import Base
 
 # Association table for Post-Tag relationship
