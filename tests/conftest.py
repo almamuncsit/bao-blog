@@ -12,7 +12,7 @@ def test_db():
         SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
     )
     TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    
+
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
     try:
