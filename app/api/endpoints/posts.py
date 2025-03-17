@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from app.database import get_db
 from app.models.post import Post
 from app.models.tag import Tag
+from app.models.category import Category
 from app.schemas.post import PostCreate, Post as PostSchema
 
 router = APIRouter()
@@ -14,6 +15,15 @@ router = APIRouter()
 @router.post("/", response_model=PostSchema)
 def create_post(post: PostCreate, db: Session = Depends(get_db)):
     try:
+        # Validate category_id if provided
+        if post.category_id is not None:
+            category = db.query(Category).filter(Category.id == post.category_id).first()
+            if category is None:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Invalid category ID"
+                )
+                
         db_post = Post(
             title=post.title,
             content=post.content,
