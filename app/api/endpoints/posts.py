@@ -23,7 +23,7 @@ def create_post(post: PostCreate, db: Session = Depends(get_db)):
                     status_code=400,
                     detail="Invalid category ID"
                 )
-                
+
         db_post = Post(
             title=post.title,
             content=post.content,
