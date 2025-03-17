@@ -1,12 +1,5 @@
-from fastapi.testclient import TestClient
 import pytest
 from sqlalchemy.orm import Session
-from app.main import app
-from app.models.category import Category
-
-
-client = TestClient(app)
-
 
 def test_create_category(client, test_db: Session):
     response = client.post(
