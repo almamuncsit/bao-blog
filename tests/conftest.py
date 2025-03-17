@@ -24,7 +24,7 @@ def db_session():
         db.close()
 
 @pytest.fixture(scope="function")
-def client(db_session: Session):
+def client(db_session: Session):  # pylint: disable=redefined-outer-name
     def override_get_db():
         try:
             yield db_session
